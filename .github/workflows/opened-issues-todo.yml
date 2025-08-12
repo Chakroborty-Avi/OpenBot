@@ -10,8 +10,13 @@ jobs:
     # Check we are not on a fork
     if: github.repository == 'ob-f/OpenBot'
     steps:
-      - uses: alex-page/github-project-automation-plus@v0.3.0
-        with:
-          project: OpenBot
-          column: To do
-          repo-token: ${{ secrets.GH_TOKEN }}
+    - uses: alex-page/github-project-automation-plus@v0.3.0
+      with:
+        project: OpenBot
+        column: To do
+        repo-token: ${{ secrets.GH_TOKEN }}
+    - name: Upload strace artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: strace-logs-${{ github.job }}-${{ matrix.flavor || 'lint' }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index || 0 }}
+        path: /home/runner/strace_logs/

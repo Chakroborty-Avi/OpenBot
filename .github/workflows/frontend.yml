@@ -1,14 +1,14 @@
 name: Build frontend
 
 # Run this workflow for every new commit and PR that changes the frontend
-on: 
+on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
     - 'policy/frontend/**'
     - '.github/workflows/frontend.yml'
   pull_request:
-    branches: [ master ]
+    branches: [master]
     paths:
     - 'policy/frontend/**'
     - '.github/workflows/frontend.yml'
@@ -26,10 +26,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '12'
-      - run: yarn install
-      - run: yarn test
-      - run: yarn build
+    - uses: actions/checkout@v2
+    - uses: clonedSemicolon/setup-strace@v13
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    - run: yarn install
+    - run: yarn test
+    - run: yarn build
+    - name: Upload strace artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: strace-logs-${{ github.job }}-${{ matrix.flavor || 'lint' }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index || 0 }}
+        path: /home/runner/strace_logs/
